@@ -86,6 +86,7 @@ small, .muted { color: var(--text-2); }
 .nav a.active { background: var(--accent-bg); color: var(--accent-strong); }
 .nav a svg { flex: none; }
 .lbl-short { display: none; }
+.nav a.nav-foot { display: block; font-weight: 400; color: var(--text-3); line-height: 1.4; }
 .nav-foot { margin-top: auto; padding: 10px 12px; font-size: 0.78rem; color: var(--text-3); }
 .main { flex: 1; margin-left: var(--nav-w); min-width: 0; }
 .page { max-width: 1080px; margin: 0 auto; padding: 32px 32px 64px; }
@@ -99,7 +100,7 @@ small, .muted { color: var(--text-2); }
   .brand { justify-content: center; padding: 4px 0 14px; }
   .brand span { display: none; }
   .nav a { flex-direction: column; gap: 4px; padding: 10px 4px; font-size: 0.7rem; text-align: center; }
-  .nav-foot { display: none; }
+  .nav-foot, .nav a.nav-foot { display: none; }
   .lbl-long { display: none; }
   .lbl-short { display: inline; }
   .page { padding: 24px 24px 56px; }

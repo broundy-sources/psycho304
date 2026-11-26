@@ -1,11 +1,11 @@
 // Service worker Psycho 304 — généré au build. Met l'application en cache pour un usage hors ligne.
 // Les données (contenus, progression) sont dans IndexedDB et ne sont jamais touchées par ce fichier.
-const VERSION = "mwxjlomu";
+const VERSION = "mwxmlyzx";
 const CACHE = `psycho304-${VERSION}`;
 const ASSETS = [
   "./",
-  "./app.css?v=mwxjlomu",
-  "./app.js?v=mwxjlomu",
+  "./app.css?v=mwxmlyzx",
+  "./app.js?v=mwxmlyzx",
   "./index.html",
   "./content/00-structure.json",
   "./content/index.json",
