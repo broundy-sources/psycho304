@@ -9,6 +9,7 @@ import { isPlayable } from "../core/qcm";
 import { APP_VERSION, commitImport, exportBackup, markRechecked, purgeDemo, resetEverything, restoreBackup } from "../db/repo";
 import { get, put } from "../db/idb";
 import { setSyncConfig } from "../sync/engine";
+import { getSbConfig, sbSignIn, sbSignOut } from "../sync/sb-engine";
 import { GitHub } from "../sync/github";
 import type { ContentPack } from "../core/types";
 
@@ -113,6 +114,8 @@ export function ContentPage() {
       <div className="page-head">
         <div><h1>Gestion des contenus</h1><p>Import des paquets ChatGPT, couverture du programme, sauvegarde et réglages.</p></div>
       </div>
+
+      <AccountCard />
 
       {/* Import */}
       <div className="card">
@@ -383,7 +386,7 @@ export function SyncCard() {
   return (
     <div className="card stack">
       <div className="card-head" style={{ marginBottom: 0 }}>
-        <h2>Synchronisation et sauvegarde distante</h2>
+        <h2>Sauvegarde supplémentaire GitHub <span className="faint" style={{ fontWeight: 400, fontSize: "0.85rem" }}>(facultatif)</span></h2>
         <span className={`tag ${sync.configured ? (sync.last_error ? "tag-warn" : "tag-ok") : ""}`}>{sync.configured ? (sync.running ? "en cours…" : sync.last_error ? "à vérifier" : "active") : "non configurée"}</span>
       </div>
       {sync.configured ? (
@@ -412,10 +415,9 @@ export function SyncCard() {
         </>
       ) : (
         <>
-          <p className="muted" style={{ fontSize: "0.92rem" }}>
-            Copie automatique de votre progression et des modules importés dans un <strong>dépôt GitHub privé</strong>, puis récupération sur vos autres appareils.
-            À faire une fois par appareil. Procédure détaillée : guide d'installation, étape 3.
-          </p>
+          <details>
+          <summary className="muted" style={{ cursor: "pointer" }}>Copie complémentaire dans un dépôt GitHub privé (en plus du compte Supabase)</summary>
+          <div className="stack" style={{ marginTop: 12 }}>
           <div className="field">
             <label htmlFor="sync-repo">Dépôt privé (propriétaire/nom)</label>
             <input id="sync-repo" className="input" value={repo} onChange={(e) => setRepo(e.target.value)} placeholder="votre-pseudo/psycho304-donnees" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
@@ -431,7 +433,124 @@ export function SyncCard() {
           </div>
           {err && <div className="notice notice-ko" style={{ fontSize: "0.88rem" }}>{err}</div>}
           <div><button className="btn btn-primary" disabled={busy} onClick={connect}>{busy ? "Vérification…" : "Connecter et synchroniser"}</button></div>
+          </div>
+          </details>
         </>
+      )}
+    </div>
+  );
+}
+
+
+export function AccountCard() {
+  const { data, sync, syncNow, refreshSyncStatus, toast } = useStore();
+  const [url, setUrl] = useState("");
+  const [key, setKey] = useState("");
+  const [baked, setBaked] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [confirmOut, setConfirmOut] = useState(false);
+
+  React.useEffect(() => {
+    getSbConfig().then((c) => {
+      if (c) {
+        setUrl(c.url);
+        setKey(c.key);
+        setBaked(true);
+      }
+    });
+  }, []);
+
+  const localPacks = data.packs.filter((p) => p.source !== "bundled" && (p.raw as any)?.pack?.kind === "content").length;
+
+  const login = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr(null);
+    if (!/^https:\/\/[\w.-]+/.test(url.trim())) return setErr("Adresse du projet invalide (https://xxxx.supabase.co)");
+    if (!key.trim()) return setErr("Clé publique manquante (sb_publishable_… ou clé anon)");
+    if (!email.trim() || !password) return setErr("Saisissez l'e-mail et le mot de passe du compte");
+    setBusy(true);
+    try {
+      await sbSignIn({ url: url.trim(), key: key.trim() }, email, password);
+      setPassword("");
+      await refreshSyncStatus();
+      toast("Connecté — envoi et réception des données…");
+      const r = await syncNow(true);
+      if (r && !r.errors.length) toast(`Synchronisation terminée${r.pulled || r.packs ? ` : ${r.pulled} réponse(s) et ${r.packs} module(s) reçus` : ""}`);
+    } catch (e2) {
+      setErr((e2 as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="card stack">
+      <div className="card-head" style={{ marginBottom: 0 }}>
+        <h2>Compte et synchronisation</h2>
+        <span className={`tag ${sync.sbEmail ? (sync.sbError ? "tag-warn" : "tag-ok") : ""}`}>
+          {sync.sbEmail ? (sync.running ? "synchronisation…" : sync.sbError ? "à vérifier" : "connecté") : "non connecté"}
+        </span>
+      </div>
+      {sync.sbEmail ? (
+        <>
+          <div className="muted" style={{ fontSize: "0.9rem" }}>
+            Connecté : <strong>{sync.sbEmail}</strong><br />
+            Dernière synchronisation : {sync.sbLast ? fmtDate(sync.sbLast, true) : "en cours…"}
+            {sync.pending > 0 && ` · ${sync.pending} élément(s) en attente d'envoi`}
+            {!sync.online && " · hors ligne : envoi au retour du réseau"}
+          </div>
+          {sync.sbError && <div className="notice notice-warn" style={{ fontSize: "0.85rem" }}>Dernier problème : {sync.sbError}</div>}
+          <div className="row">
+            <button className="btn btn-primary" disabled={sync.running} onClick={() => syncNow(true)}>{sync.running ? "Synchronisation…" : "Synchroniser maintenant"}</button>
+            <button className="btn btn-ghost" onClick={() => setConfirmOut(true)}>Se déconnecter…</button>
+          </div>
+          <div className="faint" style={{ fontSize: "0.8rem" }}>Automatique : à l'ouverture, toutes les 3 minutes, après chaque session ou import, au retour du réseau et à la mise en arrière-plan. Hors ligne, tout est enregistré sur l'appareil puis envoyé plus tard.</div>
+          {confirmOut && (
+            <Modal onClose={() => setConfirmOut(false)} label="Se déconnecter">
+              <h2 style={{ marginBottom: 8 }}>Se déconnecter de cet appareil ?</h2>
+              <p className="muted">La synchronisation s'arrête ici. Les contenus et la progression restent sur cet appareil et dans votre compte ; rien n'est effacé.{sync.pending > 0 && ` Attention : ${sync.pending} élément(s) pas encore envoyés — synchronisez d'abord.`}</p>
+              <div className="row" style={{ justifyContent: "flex-end" }}>
+                <button className="btn btn-ghost" onClick={() => setConfirmOut(false)}>Annuler</button>
+                <button className="btn btn-danger" onClick={async () => { await sbSignOut(); await refreshSyncStatus(); setConfirmOut(false); toast("Déconnecté — données conservées sur l'appareil"); }}>Se déconnecter</button>
+              </div>
+            </Modal>
+          )}
+        </>
+      ) : (
+        <form className="stack" onSubmit={login}>
+          <p className="muted" style={{ fontSize: "0.92rem" }}>
+            Connectez-vous pour retrouver les mêmes contenus, la même progression et le même historique sur votre ordinateur, votre iPad et votre iPhone.
+            {(data.attempts.length > 0 || localPacks > 0) && <> À la première connexion, les données de cet appareil (<strong>{data.attempts.length} réponse(s), {localPacks} module(s)</strong>) sont envoyées dans votre compte. Rien n'est effacé.</>}
+          </p>
+          {baked ? null : (
+            <>
+              <div className="field">
+                <label htmlFor="sb-url">Adresse du projet Supabase</label>
+                <input id="sb-url" className="input" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://xxxxxxxx.supabase.co" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
+              </div>
+              <div className="field">
+                <label htmlFor="sb-key">Clé publique (publishable)</label>
+                <input id="sb-key" className="input" value={key} onChange={(e) => setKey(e.target.value)} placeholder="sb_publishable_…" autoCapitalize="off" autoCorrect="off" spellCheck={false} />
+              </div>
+            </>
+          )}
+          <div className="field">
+            <label htmlFor="sb-email">E-mail</label>
+            <input id="sb-email" className="input" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} />
+          </div>
+          <div className="field">
+            <label htmlFor="sb-password">Mot de passe</label>
+            <input id="sb-password" className="input" type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+          {err && <div className="notice notice-ko" style={{ fontSize: "0.88rem" }}>{err}</div>}
+          <div className="row">
+            <button className="btn btn-primary" type="submit" disabled={busy}>{busy ? "Connexion…" : "Se connecter"}</button>
+            {baked && <button type="button" className="btn btn-ghost btn-sm" onClick={() => setBaked(false)}>Paramètres du serveur</button>}
+          </div>
+        </form>
       )}
     </div>
   );

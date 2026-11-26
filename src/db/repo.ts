@@ -81,11 +81,11 @@ export function previewImport(content: ContentState, pack: ContentPack): ImportP
 export { packKey };
 
 export async function saveAttempt(a: Attempt): Promise<void> {
-  await put("attempts", { ...a, _synced: 0 });
+  await put("attempts", { ...a, _synced: 0, _sb: 0 });
 }
 
 export async function saveSession(s: SessionRecord): Promise<void> {
-  await put("sessions", { ...s, _synced: 0 });
+  await put("sessions", { ...s, _synced: 0, _sb: 0 });
 }
 
 export async function saveSetting<K extends keyof Settings>(key: K, value: Settings[K]): Promise<void> {

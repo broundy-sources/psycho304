@@ -35,10 +35,7 @@ export interface BackupFile extends Snapshot {
 export const hkey = (collection: string, id: string, version: number) => `${collection}:${id}@${version}`;
 
 export function makeBackup(s: Snapshot, appVersion: string, deviceId: string, now = new Date().toISOString()): BackupFile {
-  const strip = <T>(x: T): T => {
-    const { _synced, ...rest } = x as any;
-    return rest as T;
-  };
+  const strip = <T>(x: T): T => Object.fromEntries(Object.entries(x as any).filter(([k]) => !k.startsWith("_"))) as T;
   return {
     format: "psycho304-backup",
     backup_version: 1,

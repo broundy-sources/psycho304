@@ -1,20 +1,30 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { loadAll, requestPersistence, saveAttempt, saveSession, saveSetting, uuid, type AppData } from "../db/repo";
 import { buildSession, type BuildOptions } from "../core/qcm";
-import { getSyncConfig, getSyncState, runSync, type SyncConfig, type SyncResult } from "../sync/engine";
+import { getSyncConfig, getSyncState, runSync, type SyncConfig } from "../sync/engine";
+import { getSbConfig, getSbSession, getSbState, pendingCounts, runSbSync } from "../sync/sb-engine";
 import type { Attempt, SessionConfig, SessionRecord, Settings } from "../core/types";
 
 export interface ActiveSession { record: SessionRecord; index: number }
 
 export interface SyncStatus {
+  /** Supabase : compte personnel (synchronisation principale) */
+  sbConfigured: boolean;
+  sbEmail?: string;
+  sbLast?: string;
+  sbError?: string;
+  pending: number;
+  /** GitHub : sauvegarde supplémentaire facultative */
   configured: boolean;
   label?: string;
   repo?: string;
-  running: boolean;
-  online: boolean;
   last_success?: string;
   last_error?: string;
+  running: boolean;
+  online: boolean;
 }
+
+export interface SyncOutcome { pulled: number; packs: number; errors: string[] }
 
 interface Store {
   data: AppData;
@@ -32,7 +42,7 @@ interface Store {
   abandonSession: () => void;
   setSetting: <K extends keyof Settings>(k: K, v: Settings[K]) => Promise<void>;
   sync: SyncStatus;
-  syncNow: (manual?: boolean) => Promise<SyncResult | null>;
+  syncNow: (manual?: boolean) => Promise<SyncOutcome | null>;
   scheduleSync: () => void;
   refreshSyncStatus: () => Promise<void>;
 }
@@ -50,30 +60,70 @@ export function StoreProvider({ initial, children }: { initial: AppData; childre
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [persisted, setPersisted] = useState<boolean | null>(null);
   const [active, setActive] = useState<ActiveSession | null>(null);
-  const [sync, setSync] = useState<SyncStatus>({ configured: false, running: false, online: typeof navigator === "undefined" ? true : navigator.onLine });
+  const [sync, setSync] = useState<SyncStatus>({ sbConfigured: false, pending: 0, configured: false, running: false, online: typeof navigator === "undefined" ? true : navigator.onLine });
   const syncLock = useRef(false);
   const syncTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const refreshSyncStatus = useCallback(async () => {
     const cfg: SyncConfig | null = await getSyncConfig();
     const st = await getSyncState();
-    setSync((s) => ({ ...s, configured: !!cfg, label: cfg?.device_label, repo: cfg ? `${cfg.owner}/${cfg.repo}` : undefined, last_success: st.last_success, last_error: st.last_error }));
+    const sbCfg = await getSbConfig();
+    const sbSess = await getSbSession();
+    const sbSt = sbSess ? await getSbState(sbSess.user.id) : null;
+    const p = await pendingCounts();
+    setSync((s) => ({
+      ...s,
+      sbConfigured: !!sbCfg,
+      sbEmail: sbSess?.user.email,
+      sbLast: sbSt?.last_success,
+      sbError: sbSt?.last_error,
+      pending: p.attempts + p.sessions + p.packs,
+      configured: !!cfg,
+      label: cfg?.device_label,
+      repo: cfg ? `${cfg.owner}/${cfg.repo}` : undefined,
+      last_success: st.last_success,
+      last_error: st.last_error,
+    }));
   }, []);
 
-  const syncNow = useCallback(async (manual = false): Promise<SyncResult | null> => {
-    const cfg = await getSyncConfig();
-    if (!cfg || syncLock.current) return null;
+  /** Synchronise avec Supabase (si connecté) puis GitHub (si configuré). Ne bloque jamais l'appli. */
+  const syncNow = useCallback(async (manual = false): Promise<SyncOutcome | null> => {
+    const sbSess = await getSbSession();
+    const ghCfg = await getSyncConfig();
+    if ((!sbSess && !ghCfg) || syncLock.current) return null;
     if (!navigator.onLine && !manual) return null;
     syncLock.current = true;
     setSync((s) => ({ ...s, running: true }));
+    const out: SyncOutcome = { pulled: 0, packs: 0, errors: [] };
+    let changed = false;
     try {
-      const r = await runSync(cfg);
-      if (r.pulledAttempts || r.pulledPacks.length) setData(await loadAll());
-      if (manual) setToastMsg(r.pulledAttempts || r.pulledPacks.length ? `Synchronisé : ${r.pulledAttempts} réponse(s) et ${r.pulledPacks.length} paquet(s) reçus` : "Synchronisé");
-      return r;
-    } catch (e) {
-      if (manual) setToastMsg(`Synchronisation impossible : ${(e as Error).message}`);
-      return null;
+      if (sbSess) {
+        try {
+          const r = await runSbSync();
+          out.pulled += r.pulled.attempts;
+          out.packs += r.pulled.packs.length;
+          out.errors.push(...r.errors);
+          changed ||= !!(r.pulled.attempts || r.pulled.packs.length || r.pulled.sessions || r.pulled.settings);
+        } catch (e) {
+          out.errors.push(`Supabase : ${(e as Error).message}`);
+        }
+      }
+      if (ghCfg) {
+        try {
+          const r = await runSync(ghCfg);
+          out.pulled += r.pulledAttempts;
+          out.packs += r.pulledPacks.length;
+          changed ||= !!(r.pulledAttempts || r.pulledPacks.length);
+        } catch (e) {
+          out.errors.push(`GitHub : ${(e as Error).message}`);
+        }
+      }
+      if (changed) setData(await loadAll());
+      if (manual) {
+        if (out.errors.length) setToastMsg(`Synchronisation incomplète — ${out.errors[0]}`);
+        else setToastMsg(out.pulled || out.packs ? `Synchronisé : ${out.pulled} réponse(s) et ${out.packs} module(s) reçus` : "Synchronisé");
+      }
+      return out;
     } finally {
       syncLock.current = false;
       setSync((s) => ({ ...s, running: false }));

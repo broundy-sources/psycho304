@@ -54,11 +54,11 @@ export function App() {
             <span className="lbl-short">{n.short}</span>
           </a>
         ))}
-        <div className="nav-foot">
-          {sync.configured
-            ? sync.running ? "Synchronisation…" : sync.last_success ? `Synchronisé ${new Date(sync.last_success).toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}${sync.online ? "" : " · hors ligne"}` : "Synchronisation en attente"
-            : "Données stockées sur cet appareil uniquement"}
-        </div>
+        <a href="#/contenus" className="nav-foot">
+          {sync.sbEmail
+            ? sync.running ? "Synchronisation…" : `${sync.sbEmail}${sync.sbLast ? ` · synchronisé ${new Date(sync.sbLast).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}` : ""}${sync.pending ? ` · ${sync.pending} en attente` : ""}${sync.online ? "" : " · hors ligne"}`
+            : sync.configured ? `Sauvegarde GitHub active` : "Non connecté · données sur cet appareil"}
+        </a>
       </nav>
       <main className="main">{page}</main>
     </div>

@@ -48,6 +48,7 @@ async function answer(page, n) {
 }
 async function connect(page, label) {
   await page.goto(BASE + "#/contenus");
+  await page.locator("details", { hasText: "Copie complémentaire" }).evaluate((e) => (e.open = true));
   await page.fill("#sync-repo", `${fake.owner}/${fake.repo}`);
   await page.fill("#sync-token", fake.token);
   await page.fill("#sync-label", label);
@@ -75,6 +76,7 @@ check("2e ouverture : rien n'est réimporté (déjà installé)", packsA.importe
 
 // Mauvais jeton refusé proprement
 await A.page.goto(BASE + "#/contenus");
+await A.page.locator("details", { hasText: "Copie complémentaire" }).evaluate((e) => (e.open = true));
 await A.page.fill("#sync-repo", `${fake.owner}/${fake.repo}`);
 await A.page.fill("#sync-token", "mauvais");
 await A.page.getByRole("button", { name: "Connecter et synchroniser" }).click();

@@ -22,28 +22,22 @@ Après la première ouverture, l'appli fonctionne hors ligne (cours, QCM, progre
 - Nouveau module produit par ChatGPT : *Gestion des contenus* → *Choisir des fichiers* → *Importer*. Il est envoyé dans votre dépôt privé et arrive sur vos autres appareils à leur prochaine synchronisation.
 - Pour qu'un module fasse partie des contenus de base de l'appli : le placer dans `public/content/`, l'ajouter à `public/content/index.json`, puis republier.
 
-## 3. Activer la synchronisation (une fois par appareil)
+## 3. Compte et synchronisation (Supabase)
 
-La progression et les modules importés sont copiés dans un **dépôt GitHub privé** (`psycho304-donnees`). Chaque envoi est conservé dans l'historique du dépôt : c'est aussi votre sauvegarde distante.
+Configuration une seule fois : voir **`docs/SUPABASE.md`** (création du projet, des tables et du compte).
+Ensuite, sur chaque appareil : *Gestion des contenus* → **Compte et synchronisation** → se connecter. Contenus, progression et historique de réponses sont alors identiques sur l'ordinateur, l'iPad et l'iPhone, avec fonctionnement hors ligne.
 
-1. **Créer le jeton d'accès (une seule fois)** : depuis l'appli, *Gestion des contenus* → *Créer un jeton (formulaire pré-rempli)*, ou sur github.com → Settings → Developer settings → Fine-grained tokens.
-   - *Repository access* : **Only select repositories** → `psycho304-donnees`.
-   - *Permissions* : **Contents : Read and write** (déjà rempli).
-   - *Generate token*, puis copier le jeton (`github_pat_…`). Le ranger dans votre gestionnaire de mots de passe : GitHub ne le réaffiche pas.
-2. **Dans l'appli, sur chaque appareil** : *Gestion des contenus* → *Synchronisation et sauvegarde distante* → dépôt `broundy-sources/psycho304-donnees`, coller le jeton, nommer l'appareil → *Connecter et synchroniser*.
-
-La synchronisation se fait ensuite seule : à l'ouverture, toutes les 3 minutes, après chaque session, au retour du réseau et à la fermeture. Hors ligne, rien n'est perdu : l'envoi se fait au retour de la connexion.
-
-Le jeton reste sur l'appareil (jamais dans les sauvegardes exportées). En cas de perte ou de vol d'un appareil : révoquer le jeton sur GitHub et en créer un nouveau.
+La copie dans un dépôt GitHub privé reste disponible en option (*Sauvegarde supplémentaire GitHub*).
 
 ## 4. Sauvegardes
 
 | Sauvegarde | Fréquence | Contenu |
 |---|---|---|
-| Dépôt privé GitHub | automatique | progression complète de chaque appareil + modules importés, avec historique |
+| Compte Supabase | automatique | modules importés, réponses, sessions, réglages |
+| Dépôt privé GitHub (facultatif) | automatique si activé | copie versionnée de la progression et des modules |
 | Export local | manuel (conseillé : chaque semaine) | *Gestion des contenus* → *Exporter la sauvegarde* : contenus + progression dans un fichier JSON |
 
-**Récupérer après une perte** (appareil changé, données du navigateur effacées) : réinstaller l'appli, activer la synchronisation avec le même dépôt → modules et progression reviennent. Sans synchronisation : déposer le fichier exporté dans la zone d'import.
+**Récupérer après une perte** (appareil changé, données du navigateur effacées) : réinstaller l'appli et se reconnecter → modules, progression et historique reviennent. Sans synchronisation : déposer le fichier exporté dans la zone d'import.
 
 ## 5. À éviter
 

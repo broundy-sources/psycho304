@@ -19,8 +19,9 @@
 │                         │  synchronisation (au retour du réseau)  │
 └─────────────────────────┼─────────────────────────────────────────┘
                           ▼
-            Dépôt GitHub privé « psycho304-donnees » (API contents, jeton fine-grained)
-            progression/<appareil>.json · contenus/<paquet>.json · historique git
+            Supabase (offre gratuite) — Auth e-mail/mot de passe
+            Postgres + RLS : content_packs · attempts · sessions · settings
+            (+ option : dépôt GitHub privé, copie versionnée)
 ```
 
 Hébergement : fichiers statiques (`dist/`) sur Cloudflare Pages, Netlify ou GitHub Pages — gratuits, HTTPS fourni (obligatoire pour une PWA).
@@ -53,22 +54,24 @@ Hébergement : fichiers statiques (`dist/`) sur Cloudflare Pages, Netlify ou Git
 
 Les migrations de base sont versionnées (`onupgradeneeded`) et n'effacent jamais de magasin existant.
 
-## 4. Synchronisation et sauvegarde distante (GitHub, lot 1 bis)
+## 4. Compte et synchronisation (Supabase, lot 1 bis)
 
-Choix révisé (26/11) : un dépôt GitHub privé plutôt que Supabase. Raisons : un seul compte (déjà utilisé pour l'hébergement), aucune mise en pause du service après une semaine d'inactivité, historique complet de chaque envoi (sauvegarde versionnée), aucune base de données à administrer.
+Authentification e-mail + mot de passe (Supabase Auth, inscriptions publiques désactivées), jeton renouvelé automatiquement. API REST appelée par `fetch`, clé publique dans `apikey`, jeton utilisateur dans `Authorization`.
 
-| Fichier distant | Écrit par | Fusion |
+| Table | Contenu | Règle |
 |---|---|---|
-| `progression/<id-appareil>.json` | uniquement l'appareil concerné (aucun conflit d'écriture) | union des réponses par identifiant ; sessions et réglages : la plus récente gagne |
-| `contenus/<paquet>.json` | l'appareil où le paquet a été importé à la main | importé ailleurs dans l'ordre d'import, avec les mêmes règles qu'un import manuel |
+| `content_packs` | modules importés (paquet brut) | ajout seul, jamais écrasé |
+| `attempts` | réponses | ajout seul, jamais modifié ni supprimé |
+| `sessions` | sessions d'entraînement | la plus récente gagne (déclencheur) |
+| `settings` | réglages | la plus récente gagne (déclencheur) |
 
-Chaque fichier de progression contient toute la progression connue de l'appareil : un seul fichier suffit à tout restaurer. Une écriture n'a lieu que si le contenu a changé.
+Chaque écriture reçoit un numéro `row_seq` croissant : un appareil ne télécharge que les lignes postérieures à son dernier numéro connu (pagination jusqu'à page vide). Envoi : tout élément local non marqué « envoyé » (`_sb`), ce qui réalise aussi la migration initiale des données existantes. Sécurité : RLS `user_id = auth.uid()` sur toutes les tables.
 
-Cycle : à l'ouverture, toutes les 3 minutes (appli visible), à la fin d'une session, après un import ou un réglage, au retour du réseau et quand l'appli passe en arrière-plan.
+Hors ligne : tout est écrit d'abord dans IndexedDB ; la synchronisation reprend au retour du réseau.
 
-Contenus de base : les paquets de `public/content/` sont livrés avec l'appli et installés à chaque démarrage s'ils manquent (clé `id@version`).
+Option : copie supplémentaire dans un dépôt GitHub privé (fichier de progression par appareil, modules), conservée du lot précédent.
 
-Sauvegarde de secours indépendante : export JSON complet, réimportable par fusion.
+Contenus de base : les paquets de `public/content/` (structure du programme) sont livrés avec l'appli et installés à chaque démarrage s'ils manquent.
 
 ## 5. Pile technique
 

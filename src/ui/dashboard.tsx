@@ -31,15 +31,15 @@ export function DashboardPage() {
         </a>
       </div>
 
-      {!sync.configured && !empty && (
+      {!sync.sbEmail && !sync.configured && (
         <div className="notice notice-warn row-between" style={{ marginBottom: 16 }}>
-          <span>Progression enregistrée uniquement sur cet appareil. Activez la sauvegarde distante pour la protéger et la retrouver sur vos autres appareils.</span>
-          <a className="btn btn-sm" href="#/contenus">Activer</a>
+          <span>Données enregistrées uniquement sur cet appareil. Connectez-vous pour les sauvegarder et les retrouver sur vos autres appareils.</span>
+          <a className="btn btn-sm" href="#/contenus">Se connecter</a>
         </div>
       )}
-      {sync.configured && sync.last_error && (
+      {sync.sbEmail && sync.sbError && (
         <div className="notice notice-warn row-between" style={{ marginBottom: 16 }}>
-          <span>Synchronisation : {sync.last_error}</span>
+          <span>Synchronisation : {sync.sbError}</span>
           <a className="btn btn-sm" href="#/contenus">Vérifier</a>
         </div>
       )}

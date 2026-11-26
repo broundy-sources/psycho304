@@ -31,12 +31,14 @@ Sans Bun, n'importe quel serveur statique fonctionne : `python3 -m http.server 5
 ```bash
 bun run build          # construit dist/
 bun run dev            # reconstruit à chaque modification
-bun run test           # tests du noyau et de la synchronisation (45 tests)
+bun run test           # tests du noyau et des synchronisations (51 tests)
 bun run typecheck      # vérification TypeScript du noyau
 bun run serve &
 node tests/ui/ui-check.mjs                  # parcours complet (17 vérifications)
 TEST_UPDATE=1 node tests/ui/offline-check.mjs  # hors ligne + mise à jour (15 vérifications)
-node tests/ui/sync-check.mjs                # synchronisation 2 appareils + récupération (16 vérifications)
+node tests/ui/sync-check.mjs                # sauvegarde GitHub, 2 appareils (18 vérifications)
+node tests/ui/supabase-check.mjs            # compte Supabase : migration, 2 appareils, hors ligne, sessions (24 vérifications)
+# Schéma SQL sur un PostgreSQL local : supabase/tests/ (stub Supabase + 14 tests RLS/déclencheurs)
 OWNER=<pseudo> scripts/deploy-github.sh     # publication GitHub Pages + dépôt privé de données
 ```
 
@@ -69,7 +71,7 @@ Architecture : voir `docs/ARCHITECTURE.md`.
 | Lot | Contenu | État |
 |---|---|---|
 | 1 | Format d'import, tableau de bord, cours, QCM (unique / multiple / vrai-faux, mélange, barèmes, certitude), corrections avec renvoi au cours, erreurs à refaire, import JSON validé, sauvegarde locale, export/restauration, PWA hors ligne | **livré** |
-| 1 bis | Contenus de base intégrés (P1-M01), synchronisation et sauvegarde distante via un dépôt GitHub privé, hébergement GitHub Pages | **livré** (publication en attente du compte GitHub) |
+| 1 bis | Hébergement GitHub Pages ; compte personnel Supabase (e-mail + mot de passe) ; synchronisation automatique et incrémentale des modules, réponses, sessions et réglages ; migration des données locales ; GitHub en sauvegarde facultative | **livré** — configuration : `docs/SUPABASE.md` |
 | 2 | Niveaux de maîtrise par notion, répétition espacée, révision du jour, consolidation, carnet d'erreurs complet | |
 | 3 | Partiels blancs, statistiques détaillées, contrôle de couverture complet | |
 | 4 | Finitions iPad, documentation finale | |

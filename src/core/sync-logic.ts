@@ -21,10 +21,7 @@ export interface ProgressFile {
 
 export interface SyncedPackFile { format: "psycho304-synced-pack"; key: string; imported_at: string; raw: unknown }
 
-const strip = <T extends object>(x: T): T => {
-  const { _synced, ...rest } = x as any;
-  return rest as T;
-};
+const strip = <T extends object>(x: T): T => Object.fromEntries(Object.entries(x as any).filter(([k]) => !k.startsWith("_"))) as T;
 
 export function buildProgressFile(s: Pick<Snapshot, "attempts" | "sessions" | "settings">, deviceId: string, label: string, now = new Date().toISOString()): ProgressFile {
   return {
