@@ -1,6 +1,6 @@
 # Psycho 304 — Installation, synchronisation et sauvegarde
 
-L'appli est publiée à une adresse fixe : **https://VOTRE-PSEUDO.github.io/psycho304/** (communiquée lors de la mise en ligne). On l'installe une fois sur chaque appareil ; elle s'ouvre ensuite depuis son icône, comme une appli classique, avec ou sans réseau.
+L'appli est publiée à une adresse fixe : **https://broundy-sources.github.io/psycho304/**. On l'installe une fois sur chaque appareil ; elle s'ouvre ensuite depuis son icône, comme une appli classique, avec ou sans réseau.
 
 ## 1. Installer l'appli
 
@@ -30,7 +30,7 @@ La progression et les modules importés sont copiés dans un **dépôt GitHub pr
    - *Repository access* : **Only select repositories** → `psycho304-donnees`.
    - *Permissions* : **Contents : Read and write** (déjà rempli).
    - *Generate token*, puis copier le jeton (`github_pat_…`). Le ranger dans votre gestionnaire de mots de passe : GitHub ne le réaffiche pas.
-2. **Dans l'appli, sur chaque appareil** : *Gestion des contenus* → *Synchronisation et sauvegarde distante* → dépôt `VOTRE-PSEUDO/psycho304-donnees`, coller le jeton, nommer l'appareil → *Connecter et synchroniser*.
+2. **Dans l'appli, sur chaque appareil** : *Gestion des contenus* → *Synchronisation et sauvegarde distante* → dépôt `broundy-sources/psycho304-donnees`, coller le jeton, nommer l'appareil → *Connecter et synchroniser*.
 
 La synchronisation se fait ensuite seule : à l'ouverture, toutes les 3 minutes, après chaque session, au retour du réseau et à la fermeture. Hors ligne, rien n'est perdu : l'envoi se fait au retour de la connexion.
 
