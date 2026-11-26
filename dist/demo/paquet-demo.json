@@ -1,0 +1,151 @@
+{
+  "format": "psycho304-content",
+  "format_version": "1.0.0",
+  "pack": {
+    "id": "demo-technique",
+    "title": "[DÉMO] Données fictives pour tester l'application",
+    "version": 1,
+    "kind": "demo",
+    "generated_at": "2026-11-26",
+    "generator": "Claude (tests techniques)",
+    "description": "Contenus de culture générale sans rapport avec l'UE 304, servant uniquement à tester l'application. Partie P0, supprimable en un clic."
+  },
+  "sources": [
+    { "id": "P0-DOC1", "kind": "other", "part_id": "P0", "number": 1, "title": "[DÉMO] Document fictif 1", "location_unit": "page", "integration_status": "integrated" },
+    { "id": "P0-DOC2", "kind": "other", "part_id": "P0", "number": 2, "title": "[DÉMO] Document fictif 2 (non fourni)", "integration_status": "unavailable" }
+  ],
+  "parts": [
+    { "id": "P0", "title": "[DÉMO] Démonstration technique", "order": 0, "description": "Données fictives." }
+  ],
+  "modules": [
+    { "id": "P0-M01", "part_id": "P0", "number": 1, "title": "[DÉMO] Le système solaire", "source_ids": ["P0-DOC1"], "status": "active" },
+    { "id": "P0-M02", "part_id": "P0", "number": 2, "title": "[DÉMO] Les océans", "source_ids": ["P0-DOC1"], "status": "active" }
+  ],
+  "concepts": [
+    { "id": "P0-M01-C001", "module_id": "P0-M01", "title": "Planètes telluriques", "summary": "Mercure, Vénus, la Terre et Mars sont les planètes rocheuses du système solaire.", "sources": [{ "source_id": "P0-DOC1", "location": "p. 1" }], "assessment": "evaluated", "importance": "core", "verification_status": "verified", "confusable_with": ["P0-M01-C002"] },
+    { "id": "P0-M01-C002", "module_id": "P0-M01", "title": "Planètes géantes", "summary": "Jupiter, Saturne, Uranus et Neptune sont des planètes géantes, gazeuses ou glacées.", "sources": [{ "source_id": "P0-DOC1", "location": "p. 2" }], "assessment": "evaluated", "importance": "core", "verification_status": "verified", "confusable_with": ["P0-M01-C001"] },
+    { "id": "P0-M01-C003", "module_id": "P0-M01", "title": "Statut de Pluton", "summary": "Pluton est classée planète naine depuis 2006 (Union astronomique internationale).", "sources": [{ "source_id": "P0-DOC1", "location": "p. 3" }], "assessment": "evaluated", "importance": "standard", "verification_status": "verified" },
+    { "id": "P0-M02-C001", "module_id": "P0-M02", "title": "Le plus grand océan", "summary": "L'océan Pacifique est le plus vaste océan du globe.", "sources": [{ "source_id": "P0-DOC1", "location": "p. 4" }], "assessment": "evaluated", "importance": "core", "verification_status": "verified" },
+    { "id": "P0-M02-C002", "module_id": "P0-M02", "title": "Nombre d'océans", "summary": "On distingue habituellement cinq océans : Pacifique, Atlantique, Indien, Austral et Arctique.", "sources": [{ "source_id": "P0-DOC1", "location": "p. 4" }], "assessment": "to_confirm", "importance": "detail", "verification_status": "to_verify" }
+  ],
+  "courses": [
+    {
+      "id": "P0-M01-COURS",
+      "module_id": "P0-M01",
+      "title": "[DÉMO] Le système solaire — cours condensé",
+      "introduction": "Cours fictif servant à vérifier l'affichage des différents blocs.",
+      "review_status": "validated",
+      "version": 1,
+      "sections": [
+        {
+          "id": "P0-M01-S01",
+          "title": "Planètes telluriques et géantes",
+          "concept_ids": ["P0-M01-C001", "P0-M01-C002"],
+          "sources": [{ "source_id": "P0-DOC1", "location": "p. 1-2" }],
+          "blocks": [
+            { "type": "text", "text": "Le système solaire compte **huit planètes**, réparties en deux familles :\n- les planètes *telluriques*, proches du Soleil ;\n- les planètes *géantes*, plus éloignées." },
+            { "type": "key_point", "text": "Telluriques = rocheuses (Mercure, Vénus, Terre, Mars). Géantes = Jupiter, Saturne, Uranus, Neptune." },
+            { "type": "definition", "term": "Planète tellurique", "definition": "Planète principalement composée de roches et de métaux, à surface solide.", "concept_id": "P0-M01-C001", "source": { "source_id": "P0-DOC1", "location": "p. 1" } },
+            { "type": "table", "title": "Comparer les deux familles", "columns": ["Critère", "Telluriques", "Géantes"], "rows": [["Composition", "Roches, métaux", "Gaz, glaces"], ["Taille", "Petite", "Très grande"], ["Anneaux", "Non", "Oui"]] },
+            { "type": "pitfall", "text": "Uranus et Neptune ne sont pas telluriques, même si elles sont plus petites que Jupiter.", "concept_ids": ["P0-M01-C001", "P0-M01-C002"] }
+          ]
+        },
+        {
+          "id": "P0-M01-S02",
+          "title": "Le cas de Pluton",
+          "concept_ids": ["P0-M01-C003"],
+          "blocks": [
+            { "type": "diagram", "kind": "flow", "title": "Chronologie", "steps": [{ "label": "1930", "detail": "Découverte" }, { "label": "1930-2006", "detail": "Considérée comme 9e planète" }, { "label": "2006", "detail": "Reclassée planète naine" }] },
+            { "type": "diagram", "kind": "tree", "title": "Classification", "root": { "label": "Corps du système solaire", "children": [{ "label": "Planètes", "children": [{ "label": "Telluriques" }, { "label": "Géantes" }] }, { "label": "Planètes naines", "detail": "dont Pluton" }] } },
+            { "type": "author", "name": "Clyde Tombaugh", "dates": "1906-1997", "contribution": "Astronome qui a découvert Pluton en 1930.", "concept_ids": ["P0-M01-C003"] },
+            { "type": "example", "title": "Exemple", "text": "Cérès est une autre planète naine, située dans la ceinture d'astéroïdes." }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "P0-M01-Q001", "module_id": "P0-M01", "concept_ids": ["P0-M01-C001"], "type": "single_choice", "category": "knowledge", "difficulty": "basic",
+      "question": "Laquelle de ces planètes est tellurique ?",
+      "options": [{ "id": "a", "text": "Mars" }, { "id": "b", "text": "Jupiter", "confusion_concept_id": "P0-M01-C002" }, { "id": "c", "text": "Neptune", "confusion_concept_id": "P0-M01-C002" }, { "id": "d", "text": "Saturne", "confusion_concept_id": "P0-M01-C002" }],
+      "correct_option_ids": ["a"],
+      "explanation": "Mars est une planète rocheuse, comme Mercure, Vénus et la Terre.",
+      "option_explanations": { "a": "Juste : Mars est tellurique.", "b": "Faux : Jupiter est une géante gazeuse.", "c": "Faux : Neptune est une géante glacée.", "d": "Faux : Saturne est une géante gazeuse." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 1" }], "variant_group": "P0-M01-V001", "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q002", "module_id": "P0-M01", "concept_ids": ["P0-M01-C001"], "type": "single_choice", "category": "definition", "difficulty": "basic",
+      "question": "Quelle planète n'est PAS tellurique ?",
+      "options": [{ "id": "a", "text": "Vénus" }, { "id": "b", "text": "Mercure" }, { "id": "c", "text": "Uranus" }, { "id": "d", "text": "La Terre" }],
+      "correct_option_ids": ["c"],
+      "explanation": "Uranus est une géante glacée ; les trois autres sont rocheuses.",
+      "option_explanations": { "a": "Vénus est tellurique.", "b": "Mercure est tellurique.", "c": "Juste : Uranus est une planète géante.", "d": "La Terre est tellurique." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 1" }], "variant_group": "P0-M01-V001", "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q003", "module_id": "P0-M01", "concept_ids": ["P0-M01-C002", "P0-M01-C001"], "type": "multiple_choice", "category": "distinction", "difficulty": "intermediate",
+      "question": "Quelles planètes sont des planètes géantes ?",
+      "options": [{ "id": "a", "text": "Jupiter" }, { "id": "b", "text": "Saturne" }, { "id": "c", "text": "Mars", "confusion_concept_id": "P0-M01-C001" }, { "id": "d", "text": "Neptune" }, { "id": "e", "text": "Mercure", "confusion_concept_id": "P0-M01-C001" }],
+      "correct_option_ids": ["a", "b", "d"],
+      "explanation": "Les quatre géantes sont Jupiter, Saturne, Uranus et Neptune.",
+      "option_explanations": { "a": "Juste.", "b": "Juste.", "c": "Faux : Mars est tellurique.", "d": "Juste.", "e": "Faux : Mercure est tellurique." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 2" }], "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q004", "module_id": "P0-M01", "concept_ids": ["P0-M01-C003"], "type": "true_false", "category": "author_date", "difficulty": "basic",
+      "question": "Vrai ou faux : Pluton est classée planète naine depuis 2006.",
+      "options": [{ "id": "vrai", "text": "Vrai" }, { "id": "faux", "text": "Faux" }],
+      "correct_option_ids": ["vrai"], "shuffle_options": false,
+      "explanation": "L'Union astronomique internationale a reclassé Pluton en 2006.",
+      "option_explanations": { "vrai": "Juste : reclassement en 2006.", "faux": "Faux : la date est exacte." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 3" }], "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q005", "module_id": "P0-M01", "concept_ids": ["P0-M01-C003"], "type": "single_choice", "category": "author_date", "difficulty": "intermediate",
+      "question": "Qui a découvert Pluton, et en quelle année ?",
+      "options": [{ "id": "a", "text": "Clyde Tombaugh, 1930" }, { "id": "b", "text": "Galilée, 1610" }, { "id": "c", "text": "Clyde Tombaugh, 2006" }, { "id": "d", "text": "Aucune des propositions ci-dessus" }],
+      "correct_option_ids": ["a"], "shuffle_options": false,
+      "explanation": "Clyde Tombaugh a découvert Pluton en 1930.",
+      "option_explanations": { "a": "Juste.", "b": "Faux : Galilée a observé les satellites de Jupiter.", "c": "Faux : 2006 est la date du reclassement.", "d": "Faux : la proposition a est juste." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 3" }], "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q006", "module_id": "P0-M01", "concept_ids": ["P0-M01-C002"], "type": "single_choice", "category": "application", "difficulty": "advanced",
+      "vignette": "Une sonde observe une planète sans surface solide, entourée d'anneaux, très éloignée du Soleil.",
+      "question": "À quelle famille appartient cette planète ?",
+      "options": [{ "id": "a", "text": "Planète tellurique", "confusion_concept_id": "P0-M01-C001" }, { "id": "b", "text": "Planète géante" }, { "id": "c", "text": "Planète naine", "confusion_concept_id": "P0-M01-C003" }],
+      "correct_option_ids": ["b"],
+      "explanation": "Absence de surface solide et anneaux : caractéristiques des planètes géantes.",
+      "option_explanations": { "a": "Faux : les telluriques ont une surface solide.", "b": "Juste.", "c": "Faux : les planètes naines sont petites et rocheuses ou glacées." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 2" }], "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M01-Q007", "module_id": "P0-M01", "concept_ids": ["P0-M01-C001"], "type": "single_choice", "category": "knowledge", "difficulty": "basic",
+      "question": "[DÉMO] Question en attente de validation : elle ne doit jamais apparaître en session.",
+      "options": [{ "id": "a", "text": "Option 1" }, { "id": "b", "text": "Option 2" }, { "id": "c", "text": "Option 3" }],
+      "correct_option_ids": ["a"],
+      "explanation": "Question non validée.",
+      "option_explanations": { "a": "-", "b": "-", "c": "-" },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 1" }], "review_status": "to_review", "version": 1
+    },
+    {
+      "id": "P0-M02-Q001", "module_id": "P0-M02", "concept_ids": ["P0-M02-C001"], "type": "single_choice", "category": "knowledge", "difficulty": "basic",
+      "question": "Quel est le plus grand océan ?",
+      "options": [{ "id": "a", "text": "Atlantique" }, { "id": "b", "text": "Indien" }, { "id": "c", "text": "Pacifique" }, { "id": "d", "text": "Arctique" }],
+      "correct_option_ids": ["c"],
+      "explanation": "Le Pacifique couvre environ un tiers de la surface du globe.",
+      "option_explanations": { "a": "Faux : deuxième plus grand.", "b": "Faux : troisième.", "c": "Juste.", "d": "Faux : le plus petit." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 4" }], "review_status": "validated", "version": 1
+    },
+    {
+      "id": "P0-M02-Q002", "module_id": "P0-M02", "concept_ids": ["P0-M02-C002"], "type": "multiple_choice", "category": "knowledge", "difficulty": "intermediate",
+      "question": "Parmi ces étendues d'eau, lesquelles sont des océans ?",
+      "options": [{ "id": "a", "text": "Austral" }, { "id": "b", "text": "Méditerranée" }, { "id": "c", "text": "Indien" }, { "id": "d", "text": "Caspienne" }],
+      "correct_option_ids": ["a", "c"],
+      "explanation": "Austral et Indien sont des océans ; la Méditerranée est une mer, la Caspienne une mer fermée.",
+      "option_explanations": { "a": "Juste.", "b": "Faux : c'est une mer.", "c": "Juste.", "d": "Faux : mer fermée." },
+      "sources": [{ "source_id": "P0-DOC1", "location": "p. 4" }], "review_status": "validated", "version": 1
+    }
+  ]
+}

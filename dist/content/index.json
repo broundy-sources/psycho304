@@ -1,0 +1,6 @@
+{
+  "description": "Paquets intégrés à l'application (site public), installés automatiquement à chaque démarrage, dans cet ordre. Les modules de cours restent dans le dépôt privé et arrivent par la synchronisation.",
+  "packs": [
+    "00-structure.json"
+  ]
+}

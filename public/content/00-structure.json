@@ -1,0 +1,118 @@
+{
+  "format": "psycho304-content",
+  "format_version": "1.0.0",
+  "pack": {
+    "id": "structure",
+    "title": "Structure du programme (parties et modules prévus)",
+    "version": 1,
+    "kind": "content",
+    "generated_at": "2026-11-26",
+    "generator": "Claude, d'après le cahier des charges",
+    "description": "Parties et modules prévus. Les modules dont le paquet n'est pas encore livré sont marqués « planned ». Le module P1-M01 est défini par son propre paquet."
+  },
+  "parts": [
+    {
+      "id": "P1",
+      "title": "Psychologie clinique et psychopathologie psychanalytique",
+      "order": 1
+    },
+    {
+      "id": "P2",
+      "title": "Psychopathologie multidimensionnelle",
+      "order": 2
+    }
+  ],
+  "modules": [
+    {
+      "id": "P1-M02",
+      "part_id": "P1",
+      "number": 2,
+      "title": "Métapsychologie freudienne",
+      "status": "planned"
+    },
+    {
+      "id": "P1-M03",
+      "part_id": "P1",
+      "number": 3,
+      "title": "Clinique psychanalytique du symptôme",
+      "status": "planned"
+    },
+    {
+      "id": "P1-M04",
+      "part_id": "P1",
+      "number": 4,
+      "title": "Traumatisme et causalité psychique",
+      "status": "planned"
+    },
+    {
+      "id": "P1-M05",
+      "part_id": "P1",
+      "number": 5,
+      "title": "Psychopathologie et structures de personnalité",
+      "status": "planned"
+    },
+    {
+      "id": "P1-M06",
+      "part_id": "P1",
+      "number": 6,
+      "title": "Névroses et formes pathologiques",
+      "status": "planned"
+    },
+    {
+      "id": "P1-M07",
+      "part_id": "P1",
+      "number": 7,
+      "title": "Psychoses et formes pathologiques",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M08",
+      "part_id": "P2",
+      "number": 8,
+      "title": "Modèles explicatifs de la psychopathologie",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M09",
+      "part_id": "P2",
+      "number": 9,
+      "title": "Modèle biopsychosocial",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M10",
+      "part_id": "P2",
+      "number": 10,
+      "title": "Facteurs de risque, de protection et vulnérabilité-stress",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M11",
+      "part_id": "P2",
+      "number": 11,
+      "title": "Méthodes d'évaluation clinique, entretiens, tests et anamnèse",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M12",
+      "part_id": "P2",
+      "number": 12,
+      "title": "Diagnostic et annonce diagnostique",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M13",
+      "part_id": "P2",
+      "number": 13,
+      "title": "Psychoéducation",
+      "status": "planned"
+    },
+    {
+      "id": "P2-M14",
+      "part_id": "P2",
+      "number": 14,
+      "title": "Psychopathologie développementale",
+      "status": "planned"
+    }
+  ]
+}

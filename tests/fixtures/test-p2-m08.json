@@ -1,0 +1,14 @@
+{
+  "format": "psycho304-content",
+  "format_version": "1.0.0",
+  "pack": { "id": "test-p2-m08", "title": "[TEST] Paquet fictif pour les tests de synchronisation", "version": 1, "kind": "content", "generated_at": "2026-11-26", "generator": "tests" },
+  "sources": [{ "id": "P2-TESTDOC", "kind": "other", "part_id": "P2", "title": "[TEST] Document fictif", "integration_status": "integrated" }],
+  "modules": [{ "id": "P2-M08", "part_id": "P2", "number": 8, "title": "[TEST] Module fictif synchronisé", "status": "active" }],
+  "concepts": [{ "id": "P2-M08-C001", "module_id": "P2-M08", "title": "[TEST] Notion fictive", "sources": [{ "source_id": "P2-TESTDOC", "location": "p. 1" }], "assessment": "evaluated", "verification_status": "verified" }],
+  "questions": [{
+    "id": "P2-M08-Q001", "module_id": "P2-M08", "concept_ids": ["P2-M08-C001"], "type": "single_choice", "category": "knowledge", "difficulty": "basic",
+    "question": "[TEST] Question fictive de synchronisation", "options": [{ "id": "a", "text": "Réponse A" }, { "id": "b", "text": "Réponse B" }, { "id": "c", "text": "Réponse C" }],
+    "correct_option_ids": ["a"], "explanation": "Test.", "option_explanations": { "a": "Juste.", "b": "Faux.", "c": "Faux." },
+    "sources": [{ "source_id": "P2-TESTDOC", "location": "p. 1" }], "review_status": "validated", "version": 1
+  }]
+}

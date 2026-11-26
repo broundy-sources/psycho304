@@ -1,0 +1,19 @@
+{
+  "name": "psycho304",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Application de révision adaptative — UE 304 psychologie clinique et psychopathologies plurielles",
+  "type": "module",
+  "scripts": {
+    "build": "bun scripts/build.ts",
+    "dev": "bun scripts/build.ts --watch",
+    "serve": "bun scripts/serve.ts",
+    "test": "bun test tests/",
+    "test:ui": "node tests/ui/ui-check.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.core.json"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  }
+}

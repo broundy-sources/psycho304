@@ -1,0 +1,345 @@
+{
+  "$schema": "./psycho304-content.schema.json",
+  "format": "psycho304-content",
+  "format_version": "1.0.0",
+  "pack": {
+    "id": "exemple-format",
+    "title": "[EXEMPLE] Illustration du format — contenus fictifs",
+    "version": 1,
+    "kind": "example",
+    "generated_at": "2026-11-26",
+    "generator": "Claude (exemple de format)",
+    "description": "Fichier d'illustration du format uniquement. Tous les textes sont fictifs et indiquent ce qu'il faut y écrire. Les vrais paquets utilisent \"kind\": \"content\".",
+    "changelog": [
+      { "version": 1, "date": "2026-11-26", "changes": "Création de l'exemple." }
+    ]
+  },
+  "sources": [
+    {
+      "id": "P1-CM5",
+      "kind": "CM",
+      "part_id": "P1",
+      "number": 5,
+      "title": "[EXEMPLE] Intitulé exact du CM 5 tel qu'il figure sur le document",
+      "authors": ["[EXEMPLE] Nom de l'enseignant"],
+      "file_name": "[EXEMPLE] nom-du-fichier-cm5.pdf",
+      "location_unit": "diapositive",
+      "integration_status": "integrated"
+    },
+    {
+      "id": "P1-TD2",
+      "kind": "TD",
+      "part_id": "P1",
+      "number": 2,
+      "title": "[EXEMPLE] Intitulé du TD 2",
+      "location_unit": "page",
+      "integration_status": "partial",
+      "notes": "[EXEMPLE] Pages 1 à 6 traitées, pages 7 à 10 restantes."
+    },
+    {
+      "id": "ART-AUTEUR-1915",
+      "kind": "article",
+      "title": "[EXEMPLE] Titre d'un article cité dans le cours",
+      "authors": ["[EXEMPLE] Auteur"],
+      "year": 1915,
+      "location_unit": "page",
+      "integration_status": "integrated"
+    },
+    {
+      "id": "P2-TD5",
+      "kind": "TD",
+      "part_id": "P2",
+      "number": 5,
+      "title": "TD 5 — partie 2 (pas encore disponible)",
+      "integration_status": "unavailable"
+    }
+  ],
+  "parts": [
+    { "id": "P1", "title": "Psychologie clinique et psychopathologie psychanalytique", "order": 1 },
+    { "id": "P2", "title": "Psychopathologie multidimensionnelle", "order": 2 }
+  ],
+  "modules": [
+    {
+      "id": "P1-M07",
+      "part_id": "P1",
+      "number": 7,
+      "title": "Psychoses et formes pathologiques",
+      "description": "[EXEMPLE] Une phrase décrivant le périmètre du module.",
+      "source_ids": ["P1-CM5", "P1-TD2"],
+      "status": "active"
+    },
+    {
+      "id": "P2-M08",
+      "part_id": "P2",
+      "number": 8,
+      "title": "Modèles explicatifs de la psychopathologie",
+      "status": "planned"
+    }
+  ],
+  "concepts": [
+    {
+      "id": "P1-M07-C001",
+      "module_id": "P1-M07",
+      "title": "[EXEMPLE] Notion A",
+      "summary": "[EXEMPLE] Définition courte de la notion A, en 1 à 3 phrases, fidèle au cours.",
+      "sources": [{ "source_id": "P1-CM5", "location": "Diapositives 12-13" }],
+      "assessment": "evaluated",
+      "importance": "core",
+      "verification_status": "verified",
+      "authors": ["[EXEMPLE] Auteur"],
+      "keywords": ["[EXEMPLE] mot-clé"],
+      "confusable_with": ["P1-M07-C002"]
+    },
+    {
+      "id": "P1-M07-C002",
+      "module_id": "P1-M07",
+      "title": "[EXEMPLE] Notion B (souvent confondue avec A)",
+      "summary": "[EXEMPLE] Définition courte de la notion B.",
+      "sources": [{ "source_id": "P1-CM5", "location": "Diapositive 14" }],
+      "assessment": "evaluated",
+      "importance": "standard",
+      "verification_status": "verified",
+      "confusable_with": ["P1-M07-C001"]
+    },
+    {
+      "id": "P1-M07-C003",
+      "module_id": "P1-M07",
+      "title": "[EXEMPLE] Notion C (évaluation à confirmer)",
+      "sources": [{ "source_id": "P1-TD2", "location": "p. 4" }],
+      "assessment": "to_confirm",
+      "importance": "detail",
+      "verification_status": "to_verify",
+      "notes": "[EXEMPLE] Mentionnée oralement en TD ; vérifier si elle figure au programme."
+    }
+  ],
+  "courses": [
+    {
+      "id": "P1-M07-COURS",
+      "module_id": "P1-M07",
+      "title": "Psychoses et formes pathologiques — cours condensé",
+      "introduction": "[EXEMPLE] Deux ou trois phrases situant le module.",
+      "review_status": "validated",
+      "version": 1,
+      "sections": [
+        {
+          "id": "P1-M07-S01",
+          "title": "[EXEMPLE] Sous-partie 1 — Notions A et B",
+          "concept_ids": ["P1-M07-C001", "P1-M07-C002"],
+          "sources": [{ "source_id": "P1-CM5", "location": "Diapositives 12-14" }],
+          "blocks": [
+            {
+              "type": "text",
+              "text": "[EXEMPLE] Paragraphe de cours. Le texte accepte un **gras**, un *italique* et des listes :\n- premier élément ;\n- second élément."
+            },
+            {
+              "type": "key_point",
+              "text": "[EXEMPLE] Concept essentiel à retenir absolument pour le QCM."
+            },
+            {
+              "type": "definition",
+              "term": "[EXEMPLE] Notion A",
+              "definition": "[EXEMPLE] Définition complète de la notion A.",
+              "concept_id": "P1-M07-C001",
+              "author": "[EXEMPLE] Auteur",
+              "source": { "source_id": "P1-CM5", "location": "Diapositive 12" }
+            },
+            {
+              "type": "table",
+              "title": "[EXEMPLE] Distinguer A et B",
+              "columns": ["Critère", "Notion A", "Notion B"],
+              "rows": [
+                ["[EXEMPLE] Mécanisme", "[EXEMPLE] …", "[EXEMPLE] …"],
+                ["[EXEMPLE] Auteur de référence", "[EXEMPLE] …", "[EXEMPLE] …"]
+              ]
+            },
+            {
+              "type": "pitfall",
+              "text": "[EXEMPLE] Piège fréquent : ne pas confondre A et B parce que…",
+              "concept_ids": ["P1-M07-C001", "P1-M07-C002"]
+            }
+          ]
+        },
+        {
+          "id": "P1-M07-S02",
+          "title": "[EXEMPLE] Sous-partie 2 — Schéma, auteur et cas",
+          "concept_ids": ["P1-M07-C003"],
+          "blocks": [
+            {
+              "type": "diagram",
+              "kind": "flow",
+              "title": "[EXEMPLE] Enchaînement en étapes",
+              "steps": [
+                { "label": "[EXEMPLE] Étape 1", "detail": "[EXEMPLE] précision" },
+                { "label": "[EXEMPLE] Étape 2" },
+                { "label": "[EXEMPLE] Étape 3" }
+              ]
+            },
+            {
+              "type": "diagram",
+              "kind": "tree",
+              "title": "[EXEMPLE] Classification hiérarchique",
+              "root": {
+                "label": "[EXEMPLE] Catégorie générale",
+                "children": [
+                  { "label": "[EXEMPLE] Sous-catégorie 1", "children": [{ "label": "[EXEMPLE] Forme 1a" }] },
+                  { "label": "[EXEMPLE] Sous-catégorie 2" }
+                ]
+              }
+            },
+            {
+              "type": "author",
+              "name": "[EXEMPLE] Nom de l'auteur",
+              "dates": "[EXEMPLE] 1856-1939",
+              "contribution": "[EXEMPLE] Apport principal de l'auteur pour ce module.",
+              "key_works": [{ "title": "[EXEMPLE] Titre de l'œuvre", "year": 1915 }],
+              "concept_ids": ["P1-M07-C001"]
+            },
+            {
+              "type": "example",
+              "title": "[EXEMPLE] Illustration clinique",
+              "text": "[EXEMPLE] Courte situation illustrant la notion."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "P1-M07-Q001",
+      "module_id": "P1-M07",
+      "concept_ids": ["P1-M07-C001"],
+      "type": "single_choice",
+      "category": "definition",
+      "difficulty": "basic",
+      "question": "[EXEMPLE] Quelle proposition définit correctement la notion A ?",
+      "options": [
+        { "id": "a", "text": "[EXEMPLE] Définition correcte de A" },
+        { "id": "b", "text": "[EXEMPLE] Définition de B (distracteur)", "confusion_concept_id": "P1-M07-C002" },
+        { "id": "c", "text": "[EXEMPLE] Définition approximative" },
+        { "id": "d", "text": "[EXEMPLE] Définition sans rapport" }
+      ],
+      "correct_option_ids": ["a"],
+      "explanation": "[EXEMPLE] Correction détaillée : pourquoi a est juste, avec rappel du cours.",
+      "option_explanations": {
+        "a": "[EXEMPLE] Juste : …",
+        "b": "[EXEMPLE] Faux : c'est la définition de la notion B.",
+        "c": "[EXEMPLE] Faux : il manque l'élément essentiel …",
+        "d": "[EXEMPLE] Faux : …"
+      },
+      "sources": [{ "source_id": "P1-CM5", "location": "Diapositive 12" }],
+      "course_section_ids": ["P1-M07-S01"],
+      "variant_group": "P1-M07-V001",
+      "review_status": "validated",
+      "version": 1
+    },
+    {
+      "id": "P1-M07-Q002",
+      "module_id": "P1-M07",
+      "concept_ids": ["P1-M07-C001"],
+      "type": "single_choice",
+      "category": "definition",
+      "difficulty": "intermediate",
+      "question": "[EXEMPLE] Reformulation de Q001 : à quelle notion correspond la description suivante : « … » ?",
+      "options": [
+        { "id": "a", "text": "[EXEMPLE] Notion B", "confusion_concept_id": "P1-M07-C002" },
+        { "id": "b", "text": "[EXEMPLE] Notion A" },
+        { "id": "c", "text": "[EXEMPLE] Notion D" },
+        { "id": "d", "text": "Aucune des propositions ci-dessus" }
+      ],
+      "correct_option_ids": ["b"],
+      "shuffle_options": false,
+      "explanation": "[EXEMPLE] Correction détaillée.",
+      "option_explanations": {
+        "a": "[EXEMPLE] Faux : …",
+        "b": "[EXEMPLE] Juste : …",
+        "c": "[EXEMPLE] Faux : …",
+        "d": "[EXEMPLE] Faux : la notion A correspond."
+      },
+      "sources": [{ "source_id": "P1-CM5", "location": "Diapositive 12" }],
+      "variant_group": "P1-M07-V001",
+      "review_status": "validated",
+      "version": 2,
+      "revision_note": "[EXEMPLE] Correction de la justification de la proposition c."
+    },
+    {
+      "id": "P1-M07-Q003",
+      "module_id": "P1-M07",
+      "concept_ids": ["P1-M07-C001", "P1-M07-C002"],
+      "type": "multiple_choice",
+      "category": "distinction",
+      "difficulty": "advanced",
+      "question": "[EXEMPLE] Parmi les propositions suivantes, lesquelles caractérisent la notion A et non la notion B ?",
+      "options": [
+        { "id": "a", "text": "[EXEMPLE] Caractéristique propre à A" },
+        { "id": "b", "text": "[EXEMPLE] Autre caractéristique propre à A" },
+        { "id": "c", "text": "[EXEMPLE] Caractéristique propre à B", "confusion_concept_id": "P1-M07-C002" },
+        { "id": "d", "text": "[EXEMPLE] Caractéristique commune à A et B" },
+        { "id": "e", "text": "[EXEMPLE] Caractéristique d'aucune des deux" }
+      ],
+      "correct_option_ids": ["a", "b"],
+      "explanation": "[EXEMPLE] Correction détaillée.",
+      "option_explanations": {
+        "a": "[EXEMPLE] Juste : …",
+        "b": "[EXEMPLE] Juste : …",
+        "c": "[EXEMPLE] Faux : propre à B.",
+        "d": "[EXEMPLE] Faux : commune aux deux, donc ne distingue pas A.",
+        "e": "[EXEMPLE] Faux : …"
+      },
+      "sources": [
+        { "source_id": "P1-CM5", "location": "Diapositives 12-14" },
+        { "source_id": "P1-TD2", "location": "p. 3" }
+      ],
+      "review_status": "validated",
+      "version": 1
+    },
+    {
+      "id": "P1-M07-Q004",
+      "module_id": "P1-M07",
+      "concept_ids": ["P1-M07-C002"],
+      "type": "true_false",
+      "category": "author_date",
+      "difficulty": "basic",
+      "question": "[EXEMPLE] Vrai ou faux : la notion B a été introduite par [Auteur] en [année].",
+      "options": [
+        { "id": "vrai", "text": "Vrai" },
+        { "id": "faux", "text": "Faux" }
+      ],
+      "correct_option_ids": ["faux"],
+      "shuffle_options": false,
+      "explanation": "[EXEMPLE] Faux : elle a été introduite par … en …",
+      "option_explanations": {
+        "vrai": "[EXEMPLE] Ce n'est pas le bon auteur / la bonne date.",
+        "faux": "[EXEMPLE] Juste : …"
+      },
+      "sources": [{ "source_id": "ART-AUTEUR-1915", "location": "p. 2" }],
+      "review_status": "validated",
+      "version": 1
+    },
+    {
+      "id": "P1-M07-Q005",
+      "module_id": "P1-M07",
+      "concept_ids": ["P1-M07-C001"],
+      "type": "single_choice",
+      "category": "clinical_vignette",
+      "difficulty": "advanced",
+      "vignette": "[EXEMPLE] M. X, 34 ans, consulte pour … (situation clinique fictive de quelques lignes).",
+      "question": "[EXEMPLE] Quel élément de la vignette évoque le plus directement la notion A ?",
+      "options": [
+        { "id": "a", "text": "[EXEMPLE] Élément 1" },
+        { "id": "b", "text": "[EXEMPLE] Élément 2" },
+        { "id": "c", "text": "[EXEMPLE] Élément 3", "confusion_concept_id": "P1-M07-C002" }
+      ],
+      "correct_option_ids": ["b"],
+      "explanation": "[EXEMPLE] Correction détaillée reliant la vignette au cours.",
+      "option_explanations": {
+        "a": "[EXEMPLE] Faux : …",
+        "b": "[EXEMPLE] Juste : …",
+        "c": "[EXEMPLE] Faux : relève plutôt de la notion B."
+      },
+      "sources": [{ "source_id": "P1-TD2", "location": "p. 5" }],
+      "review_status": "to_review",
+      "version": 1
+    }
+  ]
+}
