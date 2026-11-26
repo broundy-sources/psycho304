@@ -1,0 +1,491 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://psycho304.local/schema/psycho304-content-1.0.0.schema.json",
+  "title": "Psycho 304 — Paquet de contenus pédagogiques",
+  "description": "Format d'import des contenus pédagogiques (sources, parties, modules, notions, cours condensés, questions) de l'application Psycho 304. Version de format 1.0.0. Toutes les sections sont facultatives : un paquet peut ne contenir que des questions d'un module, par exemple. L'import fusionne par identifiant et ne supprime jamais rien.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "format_version", "pack"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "format": {
+      "const": "psycho304-content",
+      "description": "Marqueur fixe identifiant le type de fichier."
+    },
+    "format_version": {
+      "const": "1.0.0",
+      "description": "Version du format (de ce schéma), pas des contenus."
+    },
+    "pack": { "$ref": "#/$defs/pack" },
+    "sources": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+    "parts": { "type": "array", "items": { "$ref": "#/$defs/part" } },
+    "modules": { "type": "array", "items": { "$ref": "#/$defs/module" } },
+    "concepts": { "type": "array", "items": { "$ref": "#/$defs/concept" } },
+    "courses": { "type": "array", "items": { "$ref": "#/$defs/course" } },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } }
+  },
+  "$defs": {
+    "partId": {
+      "type": "string",
+      "pattern": "^P[0-9]$",
+      "description": "Partie du cours : P1, P2… (P0 est réservé aux données de démonstration)."
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^P[0-9]-M[0-9]{2}$",
+      "description": "Module : <partie>-M<numéro global sur 2 chiffres>. Ex. P1-M07, P2-M08."
+    },
+    "conceptId": {
+      "type": "string",
+      "pattern": "^P[0-9]-M[0-9]{2}-C[0-9]{3}$",
+      "description": "Notion : <module>-C<3 chiffres>. Ex. P1-M07-C014."
+    },
+    "questionId": {
+      "type": "string",
+      "pattern": "^P[0-9]-M[0-9]{2}-Q[0-9]{3,4}$",
+      "description": "Question : <module>-Q<3 ou 4 chiffres>. Ex. P1-M07-Q001."
+    },
+    "courseId": {
+      "type": "string",
+      "pattern": "^P[0-9]-M[0-9]{2}-COURS$",
+      "description": "Cours condensé d'un module : <module>-COURS. Un seul cours par module."
+    },
+    "sectionId": {
+      "type": "string",
+      "pattern": "^P[0-9]-M[0-9]{2}-S[0-9]{2}$",
+      "description": "Sous-partie d'un cours : <module>-S<2 chiffres>. Ex. P1-M07-S03."
+    },
+    "sourceId": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]+(-[A-Z0-9]+)*$",
+      "description": "Document universitaire. Conventions : P1-CM5, P1-TD3, P2-CM2, P2-TD5, ART-<AUTEUR>-<ANNEE>, LIV-<AUTEUR>-<ANNEE>, DOC-<NOM>."
+    },
+    "nonEmptyText": { "type": "string", "minLength": 1, "pattern": "\\S" },
+    "isoDate": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}(T[0-9:.]+(Z|[+-][0-9]{2}:[0-9]{2})?)?$"
+    },
+    "reviewStatus": {
+      "type": "string",
+      "enum": ["draft", "to_review", "validated", "needs_revision", "retired"],
+      "description": "Statut de validation pédagogique. Seul « validated » apparaît dans les sessions normales. « retired » retire un élément sans effacer l'historique."
+    },
+    "sourceRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source_id", "location"],
+      "properties": {
+        "source_id": { "$ref": "#/$defs/sourceId" },
+        "location": {
+          "$ref": "#/$defs/nonEmptyText",
+          "description": "Emplacement précis : « Diapositive 12 », « Diapositives 12-14 », « p. 34 », « § 2 ». Indiquer « non localisé » plutôt que d'inventer."
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "pack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "version", "kind", "generated_at"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Identifiant stable du paquet, ex. « p1-m07-questions »."
+        },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Version du paquet, à incrémenter à chaque nouvelle livraison du même paquet."
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["content", "demo", "example"],
+          "description": "content = vrais contenus ; demo = données fictives (identifiants P0 uniquement) ; example = fichier d'illustration du format, refusé à l'import."
+        },
+        "generated_at": { "$ref": "#/$defs/isoDate" },
+        "generator": { "type": "string", "description": "Ex. « ChatGPT »." },
+        "description": { "type": "string" },
+        "changelog": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["version", "date", "changes"],
+            "properties": {
+              "version": { "type": "integer", "minimum": 1 },
+              "date": { "$ref": "#/$defs/isoDate" },
+              "changes": { "$ref": "#/$defs/nonEmptyText" }
+            }
+          }
+        }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "title", "integration_status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/sourceId" },
+        "kind": { "type": "string", "enum": ["CM", "TD", "article", "book", "other"] },
+        "part_id": { "$ref": "#/$defs/partId" },
+        "number": { "type": "integer", "minimum": 0 },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "year": { "type": "integer" },
+        "file_name": { "type": "string", "description": "Nom du fichier universitaire d'origine, pour retrouver le document." },
+        "url": { "type": "string" },
+        "location_unit": { "type": "string", "enum": ["diapositive", "page", "paragraphe", "autre"] },
+        "integration_status": {
+          "type": "string",
+          "enum": ["integrated", "partial", "pending", "unavailable"],
+          "description": "integrated = entièrement exploité ; partial = en cours ; pending = disponible mais pas encore traité ; unavailable = pas encore fourni par l'université (ex. TD 5 de la partie 2)."
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "order"],
+      "properties": {
+        "id": { "$ref": "#/$defs/partId" },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "order": { "type": "integer", "minimum": 0 },
+        "description": { "type": "string" }
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "part_id", "number", "title"],
+      "properties": {
+        "id": { "$ref": "#/$defs/moduleId" },
+        "part_id": { "$ref": "#/$defs/partId" },
+        "number": { "type": "integer", "minimum": 0, "maximum": 99 },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "description": { "type": "string" },
+        "source_ids": { "type": "array", "items": { "$ref": "#/$defs/sourceId" }, "uniqueItems": true },
+        "status": { "type": "string", "enum": ["active", "planned"], "default": "active" }
+      }
+    },
+    "concept": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "module_id", "title", "sources", "assessment", "verification_status"],
+      "properties": {
+        "id": { "$ref": "#/$defs/conceptId" },
+        "module_id": { "$ref": "#/$defs/moduleId" },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "summary": {
+          "type": "string",
+          "description": "Explication courte (1 à 3 phrases), affichée dans le carnet d'erreurs et les corrections."
+        },
+        "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sourceRef" } },
+        "assessment": {
+          "type": "string",
+          "enum": ["evaluated", "not_evaluated", "to_confirm"],
+          "description": "Caractère évaluable à l'examen. Dans le doute : to_confirm, jamais not_evaluated."
+        },
+        "importance": { "type": "string", "enum": ["core", "standard", "detail"] },
+        "verification_status": {
+          "type": "string",
+          "enum": ["verified", "to_verify", "disputed"],
+          "description": "Vérification de la notion contre la source (exactitude, localisation)."
+        },
+        "authors": { "type": "array", "items": { "type": "string" } },
+        "keywords": { "type": "array", "items": { "type": "string" } },
+        "confusable_with": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/conceptId" },
+          "uniqueItems": true,
+          "description": "Notions fréquemment confondues avec celle-ci."
+        },
+        "prerequisites": { "type": "array", "items": { "$ref": "#/$defs/conceptId" }, "uniqueItems": true },
+        "version": { "type": "integer", "minimum": 1, "default": 1 },
+        "notes": { "type": "string" }
+      }
+    },
+    "course": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "module_id", "title", "sections", "review_status", "version"],
+      "properties": {
+        "id": { "$ref": "#/$defs/courseId" },
+        "module_id": { "$ref": "#/$defs/moduleId" },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "introduction": { "type": "string" },
+        "sections": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/section" } },
+        "review_status": { "$ref": "#/$defs/reviewStatus" },
+        "version": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "section": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "title", "concept_ids", "blocks"],
+      "properties": {
+        "id": { "$ref": "#/$defs/sectionId" },
+        "title": { "$ref": "#/$defs/nonEmptyText" },
+        "concept_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/conceptId" },
+          "uniqueItems": true,
+          "description": "Notions expliquées dans cette sous-partie (sert au renvoi automatique depuis une erreur)."
+        },
+        "sources": { "type": "array", "items": { "$ref": "#/$defs/sourceRef" } },
+        "blocks": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/block" } }
+      }
+    },
+    "block": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["text", "key_point", "definition", "table", "diagram", "author", "example", "pitfall"] }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "type": { "const": "text" },
+            "text": { "$ref": "#/$defs/nonEmptyText" }
+          },
+          "required": ["type", "text"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "key_point" },
+            "text": { "$ref": "#/$defs/nonEmptyText" }
+          },
+          "required": ["type", "text"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "definition" },
+            "term": { "$ref": "#/$defs/nonEmptyText" },
+            "definition": { "$ref": "#/$defs/nonEmptyText" },
+            "concept_id": { "$ref": "#/$defs/conceptId" },
+            "author": { "type": "string" },
+            "source": { "$ref": "#/$defs/sourceRef" }
+          },
+          "required": ["type", "term", "definition"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "table" },
+            "title": { "type": "string" },
+            "columns": { "type": "array", "minItems": 2, "items": { "type": "string" } },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "array", "items": { "type": "string" } }
+            },
+            "caption": { "type": "string" }
+          },
+          "required": ["type", "columns", "rows"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "diagram" },
+            "kind": { "enum": ["flow", "tree"] },
+            "title": { "type": "string" },
+            "steps": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["label"],
+                "properties": { "label": { "$ref": "#/$defs/nonEmptyText" }, "detail": { "type": "string" } }
+              }
+            },
+            "root": { "$ref": "#/$defs/treeNode" },
+            "caption": { "type": "string" }
+          },
+          "required": ["type", "kind"],
+          "additionalProperties": false,
+          "if": { "properties": { "kind": { "const": "flow" } } },
+          "then": { "required": ["steps"] },
+          "else": { "required": ["root"] }
+        },
+        {
+          "properties": {
+            "type": { "const": "author" },
+            "name": { "$ref": "#/$defs/nonEmptyText" },
+            "dates": { "type": "string", "description": "Ex. « 1856-1939 »." },
+            "contribution": { "$ref": "#/$defs/nonEmptyText" },
+            "key_works": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["title"],
+                "properties": { "title": { "type": "string" }, "year": { "type": "integer" } }
+              }
+            },
+            "concept_ids": { "type": "array", "items": { "$ref": "#/$defs/conceptId" } }
+          },
+          "required": ["type", "name", "contribution"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "example" },
+            "title": { "type": "string" },
+            "text": { "$ref": "#/$defs/nonEmptyText" }
+          },
+          "required": ["type", "text"],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "type": { "const": "pitfall" },
+            "text": { "$ref": "#/$defs/nonEmptyText" },
+            "concept_ids": { "type": "array", "items": { "$ref": "#/$defs/conceptId" } }
+          },
+          "required": ["type", "text"],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "treeNode": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["label"],
+      "properties": {
+        "label": { "$ref": "#/$defs/nonEmptyText" },
+        "detail": { "type": "string" },
+        "children": { "type": "array", "items": { "$ref": "#/$defs/treeNode" } }
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "text"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^([a-h]|vrai|faux)$" },
+        "text": { "$ref": "#/$defs/nonEmptyText" },
+        "confusion_concept_id": {
+          "$ref": "#/$defs/conceptId",
+          "description": "Pour une proposition incorrecte : notion avec laquelle l'étudiant confond s'il la choisit. Alimente le carnet d'erreurs."
+        }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id", "module_id", "concept_ids", "type", "category", "difficulty", "question",
+        "options", "correct_option_ids", "explanation", "option_explanations", "sources",
+        "review_status", "version"
+      ],
+      "properties": {
+        "id": { "$ref": "#/$defs/questionId" },
+        "module_id": { "$ref": "#/$defs/moduleId" },
+        "concept_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/conceptId" },
+          "uniqueItems": true,
+          "description": "Notion(s) évaluée(s). La première est la notion principale."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["single_choice", "multiple_choice", "true_false"],
+          "description": "Format de réponse."
+        },
+        "category": {
+          "type": "string",
+          "enum": ["knowledge", "definition", "distinction", "author_date", "application", "clinical_vignette"],
+          "description": "Nature pédagogique de la question."
+        },
+        "difficulty": { "type": "string", "enum": ["basic", "intermediate", "advanced"] },
+        "vignette": {
+          "type": "string",
+          "description": "Texte de la situation clinique (obligatoire si category = clinical_vignette)."
+        },
+        "question": { "$ref": "#/$defs/nonEmptyText", "description": "Énoncé." },
+        "options": { "type": "array", "minItems": 2, "maxItems": 8, "items": { "$ref": "#/$defs/option" } },
+        "correct_option_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^([a-h]|vrai|faux)$" },
+          "uniqueItems": true
+        },
+        "shuffle_options": {
+          "type": "boolean",
+          "default": true,
+          "description": "false si l'ordre des propositions a un sens (ex. « Aucune des propositions ci-dessus »)."
+        },
+        "explanation": { "$ref": "#/$defs/nonEmptyText", "description": "Correction détaillée." },
+        "option_explanations": {
+          "type": "object",
+          "description": "Une justification par proposition (clé = id de la proposition), y compris pour les bonnes réponses.",
+          "patternProperties": { "^([a-h]|vrai|faux)$": { "$ref": "#/$defs/nonEmptyText" } },
+          "additionalProperties": false,
+          "minProperties": 2
+        },
+        "sources": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/sourceRef" } },
+        "course_section_ids": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/sectionId" },
+          "description": "Sous-parties du cours à relire en cas d'erreur (sinon déduites des notions)."
+        },
+        "variant_group": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9-]+$",
+          "description": "Regroupe les reformulations d'une même question : l'application évite de les poser dans la même session et compte les réussites sur des formulations différentes."
+        },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "review_status": { "$ref": "#/$defs/reviewStatus" },
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "À incrémenter à chaque modification de l'énoncé, des propositions ou de la correction. L'identifiant ne change jamais."
+        },
+        "revision_note": {
+          "type": "string",
+          "description": "Ce qui a changé depuis la version précédente."
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "single_choice" } } },
+          "then": { "properties": { "correct_option_ids": { "maxItems": 1 }, "options": { "minItems": 3 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "multiple_choice" } } },
+          "then": { "properties": { "options": { "minItems": 3 } } }
+        },
+        {
+          "if": { "properties": { "type": { "const": "true_false" } } },
+          "then": {
+            "properties": {
+              "options": {
+                "minItems": 2,
+                "maxItems": 2,
+                "items": { "properties": { "id": { "enum": ["vrai", "faux"] } } }
+              },
+              "correct_option_ids": { "maxItems": 1, "items": { "enum": ["vrai", "faux"] } },
+              "shuffle_options": { "const": false }
+            },
+            "required": ["shuffle_options"]
+          },
+          "else": {
+            "properties": {
+              "options": { "items": { "properties": { "id": { "pattern": "^[a-h]$" } } } }
+            }
+          }
+        },
+        {
+          "if": { "properties": { "category": { "const": "clinical_vignette" } } },
+          "then": { "required": ["vignette"] }
+        }
+      ]
+    }
+  }
+}
